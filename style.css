@@ -29,3 +29,9 @@ h1{text-align:center;font-size:clamp(1.6rem,4vw,2.4rem);margin:0 0 8px}
 .go:disabled{opacity:.4;cursor:not-allowed}
 .status{color:var(--muted);min-height:1.4em}
 footer{text-align:center;color:var(--muted);font-size:.85rem;padding:32px 16px}
+.pages{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin:16px 0}
+.page{background:var(--card);border:2px solid var(--border);border-radius:8px;padding:8px;cursor:grab}
+.page.over{border-color:var(--accent)}
+.page img{width:100%;height:130px;object-fit:contain;transition:transform .2s}
+.page div{display:flex;gap:4px;justify-content:center;align-items:center;font-size:.85rem}
+.page button{background:none;border:1px solid var(--border);border-radius:4px;color:var(--text);cursor:pointer}

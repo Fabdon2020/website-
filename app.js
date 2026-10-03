@@ -102,6 +102,54 @@ const TOOLS = [
     },
   },
   {
+    id: 'organize', icon: '🗂️', name: 'Organize pages', desc: 'Drag to reorder, rotate or delete pages visually.',
+    accept: PDF,
+    state: [],
+    async onFiles([f]) {
+      const box = $('pages');
+      box.innerHTML = '';
+      this.state = [];
+      if (!f) return;
+      const thumbs = [];
+      await renderPages(f, 0.3, async (c, i) => { thumbs[i - 1] = c; this.state.push({ src: i - 1, rot: 0 }); });
+      const draw = () => {
+        box.innerHTML = '';
+        this.state.forEach((s, k) => {
+          const card = document.createElement('div');
+          card.className = 'page'; card.draggable = true;
+          const img = new Image(); img.src = thumbs[s.src].toDataURL();
+          img.style.transform = `rotate(${s.rot}deg)`;
+          const cap = document.createElement('div'); cap.textContent = s.src + 1;
+          const mk = (t, fn) => { const b = document.createElement('button'); b.textContent = t; b.onclick = fn; cap.append(b); };
+          mk('↻', () => { s.rot = (s.rot + 90) % 360; draw(); });
+          mk('✕', () => { this.state.splice(k, 1); draw(); $('go').disabled = !this.state.length; });
+          card.append(img, cap);
+          card.ondragstart = (e) => e.dataTransfer.setData('text/plain', k);
+          card.ondragover = (e) => { e.preventDefault(); card.classList.add('over'); };
+          card.ondragleave = () => card.classList.remove('over');
+          card.ondrop = (e) => {
+            e.preventDefault();
+            const from = +e.dataTransfer.getData('text/plain');
+            this.state.splice(k, 0, ...this.state.splice(from, 1));
+            draw();
+          };
+          box.append(card);
+        });
+      };
+      draw();
+    },
+    async run([f]) {
+      const src = await load(f);
+      const out = await PDFDocument.create();
+      const pages = await out.copyPages(src, this.state.map((s) => s.src));
+      pages.forEach((p, k) => {
+        p.setRotation(degrees((p.getRotation().angle + this.state[k].rot) % 360));
+        out.addPage(p);
+      });
+      download(await out.save(), `${base(f)}-organized.pdf`);
+    },
+  },
+  {
     id: 'rotate', icon: '🔄', name: 'Rotate PDF', desc: 'Rotate all or selected pages.',
     accept: PDF,
     options: [
@@ -229,6 +277,7 @@ function route() {
   $('file-input').multiple = !!tool.multiple;
   $('status').textContent = '';
   $('options').innerHTML = '';
+  $('pages').innerHTML = '';
   (tool.options || []).forEach((o) => {
     const l = document.createElement('label');
     l.textContent = o.label;
@@ -254,7 +303,7 @@ function renderFiles() {
     };
     mk('↑', () => { [files[i - 1], files[i]] = [files[i], files[i - 1]]; renderFiles(); }, tool.multiple && i > 0);
     mk('↓', () => { [files[i + 1], files[i]] = [files[i], files[i + 1]]; renderFiles(); }, tool.multiple && i < files.length - 1);
-    mk('✕', () => { files.splice(i, 1); renderFiles(); });
+    mk('✕', () => { files.splice(i, 1); renderFiles(); if (tool.onFiles) tool.onFiles(files); });
     list.append(li);
   });
   $('go').disabled = files.length < (tool.min || 1);
@@ -265,6 +314,7 @@ function addFiles(list) {
   const ok = [...list].filter((f) => tool.accept.split(',').includes(f.type));
   files = tool.multiple ? files.concat(ok) : ok.slice(0, 1);
   renderFiles();
+  if (tool.onFiles) tool.onFiles(files);
 }
 
 $('file-input').onchange = (e) => { addFiles(e.target.files); e.target.value = ''; };
@@ -280,7 +330,7 @@ $('go').onclick = async () => {
   $('go').disabled = true;
   status('Working…');
   try {
-    const keep = await tool.run(files, opts, status);
+    const keep = await tool.run.call(tool, files, opts, status);
     if (!keep) status('Done! Your download should start automatically.');
   } catch (err) {
     console.error(err);

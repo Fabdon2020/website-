@@ -14,6 +14,6 @@ Then open http://localhost:8000.
 
 ## Deploy for free (GitHub Pages)
 1. In the repo: **Settings → Pages → Source: GitHub Actions**.
-2. Push to `main` (or this branch). The workflow in `.github/workflows/pages.yml` publishes the site to `https://fabdon2020.github.io/website-/`.
+2. Push to `main` (or this branch). The workflow in `.github/workflows/pages.yml` publishes the site to `https://fabdon2020.github.io/freepdf/`.
 
 Netlify / Cloudflare Pages / Vercel also work — it's a plain static folder.

@@ -1,3 +1,37 @@
+// Shared: render an A4 page off-screen and save it as a (multi-page) PDF.
+window.exportA4 = async (fill, filename, status) => {
+  status('Creating your PDF…');
+  // Render an unscaled copy off-screen so html2canvas sees true A4 size.
+  const holder = document.createElement('div');
+  holder.style.cssText = 'position:fixed;left:-10000px;top:0;width:794px';
+  const page = document.createElement('div');
+  holder.append(page); document.body.append(holder);
+  fill(page);
+  try {
+    const canvas = await html2canvas(page, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: 'pt', format: 'a4' });
+    const W = pdf.internal.pageSize.getWidth(), H = pdf.internal.pageSize.getHeight();
+    const pxPerPage = Math.floor(canvas.width * (H / W));
+    // Ignore a sliver of overflow caused by rounding so short documents stay one page.
+    const total = canvas.height - pxPerPage < 40 ? Math.min(canvas.height, pxPerPage) : canvas.height;
+    for (let y = 0, i = 0; y < total; y += pxPerPage, i++) {
+      const slice = document.createElement('canvas');
+      slice.width = canvas.width; slice.height = Math.min(pxPerPage, total - y);
+      slice.getContext('2d').drawImage(canvas, 0, -y);
+      if (i) pdf.addPage();
+      pdf.addImage(slice.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, W, (slice.height * W) / canvas.width);
+    }
+    pdf.save(filename);
+    status('Done! Your PDF has been downloaded.');
+  } catch (e) {
+    console.error(e);
+    status('Error: ' + e.message);
+  } finally {
+    holder.remove();
+  }
+};
+
 // CV Builder: 10 layouts x 5 palettes = 50 templates, rendered live in the browser.
 (() => {
   const $ = (id) => document.getElementById(id);
@@ -72,7 +106,7 @@
 
   function renderInto(el, d, tplId) {
     const t = TEMPLATES.find((x) => x.id === tplId) || TEMPLATES[0];
-    el.className = `cv-page cv-${t.l.id}`;
+    el.className = `cv-page cv-${t.l.id}${el.id === "cv-page" ? " print-page" : ""}`;
     el.style.setProperty('--cv-a', t.c.a);
     el.style.setProperty('--cv-b', t.c.b);
     el.style.setProperty('--cv-d', t.c.d);
@@ -187,39 +221,8 @@
   }
 
   // ---- export ----
-  async function downloadPdf() {
-    const status = (s) => ($('cv-status').textContent = s);
-    status('Creating your PDF…');
-    // Render an unscaled copy off-screen so html2canvas sees true A4 size.
-    const holder = document.createElement('div');
-    holder.style.cssText = 'position:fixed;left:-10000px;top:0;width:794px';
-    const page = document.createElement('div');
-    holder.append(page); document.body.append(holder);
-    renderInto(page, cv, cv.template);
-    try {
-      const canvas = await html2canvas(page, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ unit: 'pt', format: 'a4' });
-      const W = pdf.internal.pageSize.getWidth(), H = pdf.internal.pageSize.getHeight();
-      const pxPerPage = Math.floor(canvas.width * (H / W));
-      // Ignore a sliver of overflow caused by rounding so short CVs stay one page.
-      const total = canvas.height - pxPerPage < 40 ? Math.min(canvas.height, pxPerPage) : canvas.height;
-      for (let y = 0, i = 0; y < total; y += pxPerPage, i++) {
-        const slice = document.createElement('canvas');
-        slice.width = canvas.width; slice.height = Math.min(pxPerPage, total - y);
-        slice.getContext('2d').drawImage(canvas, 0, -y);
-        if (i) pdf.addPage();
-        pdf.addImage(slice.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, W, (slice.height * W) / canvas.width);
-      }
-      pdf.save(`${(cv.name || 'cv').replace(/[^\w-]+/g, '_')}_CV.pdf`);
-      status('Done! Your CV has been downloaded.');
-    } catch (e) {
-      console.error(e);
-      status('Error: ' + e.message);
-    } finally {
-      holder.remove();
-    }
-  }
+  const downloadPdf = () => window.exportA4((page) => renderInto(page, cv, cv.template),
+    `${(cv.name || 'cv').replace(/[^\w-]+/g, '_')}_CV.pdf`, (t) => ($('cv-status').textContent = t));
 
   let ready = false;
   window.CV = {

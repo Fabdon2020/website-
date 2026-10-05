@@ -259,12 +259,13 @@ let files = [];
 
 // Category + icon colour per card, ilovepdf-style.
 const META = {
-  cv: ['CV', '#ff6a00'], merge: ['Organize', '#e5322d'], split: ['Organize', '#e5322d'], extract: ['Organize', '#e5322d'],
+  cv: ['CV', '#ff6a00'], invoice: ['Business', '#1f6fd1'], merge: ['Organize', '#e5322d'], split: ['Organize', '#e5322d'], extract: ['Organize', '#e5322d'],
   remove: ['Organize', '#e5322d'], organize: ['Organize', '#e5322d'], rotate: ['Edit', '#8a3ab9'],
   compress: ['Optimize', '#1f8a5b'], jpg2pdf: ['Convert', '#f2a20c'], pdf2jpg: ['Convert', '#f2a20c'],
   watermark: ['Edit', '#8a3ab9'], numbers: ['Edit', '#8a3ab9'],
 };
-const CARDS = [{ id: 'cv', icon: '📄', name: 'CV Builder', desc: 'Create a professional CV with 50 templates and your photo. Download as PDF.', badge: 'New' }, ...TOOLS];
+const CARDS = [{ id: 'cv', icon: '📄', name: 'CV Builder', desc: 'Create a professional CV with 50 templates and your photo. Download as PDF.', badge: 'New' },
+  { id: 'invoice', icon: '🧾', name: 'Invoice & Quote Maker', desc: 'Professional invoices and quotes with your logo, VAT, m² or quantity pricing and banking details.', badge: 'New' }, ...TOOLS];
 
 function card(t) {
   const [cat, color] = META[t.id] || ['Edit', '#ff6a00'];
@@ -277,10 +278,10 @@ function card(t) {
 }
 CARDS.forEach((t) => $('grid').append(card(t)));
 
-['All', 'Organize', 'Optimize', 'Convert', 'Edit', 'CV'].forEach((c, i) => {
+['All', 'Organize', 'Optimize', 'Convert', 'Edit', 'CV', 'Business'].forEach((c, i) => {
   const b = document.createElement('button');
   b.className = 'pill' + (i ? '' : ' on');
-  b.textContent = c === 'CV' ? 'CV Builder' : c;
+  b.textContent = { CV: 'CV Builder', Business: 'Invoices & Quotes' }[c] || c;
   b.onclick = () => {
     document.querySelectorAll('.pill').forEach((p) => p.classList.toggle('on', p === b));
     document.querySelectorAll('#grid .card').forEach((el) => (el.hidden = c !== 'All' && el.dataset.cat !== c));
@@ -292,12 +293,15 @@ function route() {
   const hash = location.hash.slice(1);
   tool = TOOLS.find((t) => t.id === hash) || null;
   const cv = hash === 'cv';
-  $('grid-view').hidden = !!tool || cv;
+  const inv = hash === 'invoice';
+  $('grid-view').hidden = !!tool || cv || inv;
+  $('inv-view').hidden = !inv;
   $('tool-view').hidden = !tool;
   $('cv-view').hidden = !cv;
   window.scrollTo(0, 0);
   if (hash === 'tools') $('grid').scrollIntoView();
   if (cv && window.CV) window.CV.show();
+  if (inv && window.INV) window.INV.show();
   if (!tool) return;
   files = [];
   $('tool-title').textContent = tool.name;

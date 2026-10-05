@@ -107,12 +107,12 @@
 .cv-compact h1{font-size:26px}
 .cv-compact .cv-sec{margin-top:14px}
 
-/* print: only the CV */
+/* print: only the visible A4 page */
 @media print{
   @page{size:A4;margin:0}
   body{background:#fff}
   body *{visibility:hidden}
-  #cv-page,#cv-page *{visibility:visible}
+  section:not([hidden]) .print-page,section:not([hidden]) .print-page *{visibility:visible}
   .cv-scale{transform:none!important;height:auto!important}
-  #cv-page{position:absolute;left:0;top:0;box-shadow:none}
+  section:not([hidden]) .print-page{position:absolute;left:0;top:0;box-shadow:none}
 }

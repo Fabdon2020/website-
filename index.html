@@ -8,18 +8,20 @@
 <title>Axious PDF &amp; CV Studio – Free PDF Tools &amp; CV Builder</title>
 <meta name="description" content="Free PDF tools (merge, split, compress, convert, organize) and a CV builder with 50 templates. Everything runs in your browser — no uploads, no sign-up.">
 <link rel="icon" href="logo.png">
-<link rel="stylesheet" href="style.css?v=5">
-<link rel="stylesheet" href="cv.css?v=5">
+<link rel="stylesheet" href="style.css?v=7">
+<link rel="stylesheet" href="cv.css?v=7">
+<link rel="stylesheet" href="invoice.css?v=7">
 </head>
 <body>
 <header class="top">
   <a href="#" class="brand" id="home"><img src="logo.png" alt="" width="36" height="36"><span><b>Axious</b> PDF &amp; CV Studio</span></a>
   <nav>
-    <a href="#merge">Merge PDF</a>
-    <a href="#split">Split PDF</a>
-    <a href="#compress">Compress PDF</a>
-    <a href="#jpg2pdf">Convert PDF</a>
+    <a class="q" href="#merge">Merge PDF</a>
+    <a class="q" href="#split">Split PDF</a>
+    <a class="q" href="#compress">Compress PDF</a>
+    <a class="q" href="#jpg2pdf">Convert PDF</a>
     <a href="#">All PDF tools</a>
+    <a href="#invoice">Invoices &amp; Quotes</a>
     <a href="#cv" class="nav-cta">CV Builder</a>
   </nav>
 </header>
@@ -27,8 +29,8 @@
 <main>
   <section id="grid-view">
     <div class="hero">
-      <h1>Every tool you need to work with PDFs and CVs in one place</h1>
-      <p class="sub">Every tool you need to use PDFs and build CVs, at your fingertips. All are 100% FREE and easy to use! Merge, split, compress, convert, rotate, add page numbers and watermarks, or build a CV with just a few clicks.</p>
+      <h1>Every tool you need for PDFs, CVs, invoices and quotes in one place</h1>
+      <p class="sub">Every tool you need to use PDFs and build CVs, at your fingertips. All are 100% FREE and easy to use! Merge, split, compress, convert, rotate, add page numbers and watermarks, build a CV, or create invoices and quotes with just a few clicks.</p>
     </div>
     <div class="filters" id="filters"></div>
     <div class="grid" id="grid"></div>
@@ -64,9 +66,28 @@
     </details>
     <div class="cv-layout">
       <form class="cv-form" id="cv-form" onsubmit="return false"></form>
-      <div class="cv-preview-wrap"><div class="cv-scale" id="cv-scale"><div class="cv-page" id="cv-page"></div></div></div>
+      <div class="cv-preview-wrap"><div class="cv-scale" id="cv-scale"><div class="cv-page print-page" id="cv-page"></div></div></div>
     </div>
     <p class="status" id="cv-status"></p>
+  </section>
+  <section id="inv-view" hidden>
+    <div class="cv-head">
+      <h2 id="inv-heading">Invoice &amp; Quote Maker</h2>
+      <div class="cv-actions">
+        <div class="seg" id="inv-type">
+          <button type="button" data-type="invoice">Invoice</button>
+          <button type="button" data-type="quote">Quote</button>
+        </div>
+        <button class="btn btn-ghost" id="inv-reset">Start over</button>
+        <button class="btn btn-ghost" id="inv-print">Print</button>
+        <button class="btn" id="inv-pdf">Download PDF</button>
+      </div>
+    </div>
+    <div class="cv-layout inv-layout">
+      <form class="cv-form" id="inv-form" onsubmit="return false"></form>
+      <div class="cv-preview-wrap"><div class="cv-scale" id="inv-scale"><div class="inv-page print-page" id="inv-page"></div></div></div>
+    </div>
+    <p class="status" id="inv-status"></p>
   </section>
 </main>
 
@@ -80,7 +101,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="app.js?v=5"></script>
-<script src="cv.js?v=5"></script>
+<script src="app.js?v=7"></script>
+<script src="cv.js?v=7"></script>
+<script src="invoice.js?v=7"></script>
 </body>
 </html>

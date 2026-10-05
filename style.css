@@ -65,3 +65,4 @@ footer p{margin:4px 0}
 .go[hidden]{display:none}
 .drop.has-files{padding:16px}
 .drop.has-files strong{padding:12px 28px;font-size:1rem}
+@media (max-width:1320px){nav a.q{display:none}}

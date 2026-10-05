@@ -1,0 +1,6 @@
+{
+  "name": "axious-office",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" }
+}

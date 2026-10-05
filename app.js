@@ -257,19 +257,35 @@ const TOOLS = [
 let tool = null;
 let files = [];
 
-{
-  const b = document.createElement('button');
-  b.className = 'card featured';
-  b.innerHTML = '<div class="ic">📄</div><h3>CV Builder</h3><p>50 templates, photo support, instant PDF download.</p>';
-  b.onclick = () => (location.hash = 'cv');
-  $('grid').append(b);
-}
-TOOLS.forEach((t) => {
+// Category + icon colour per card, ilovepdf-style.
+const META = {
+  cv: ['CV', '#ff6a00'], merge: ['Organize', '#e5322d'], split: ['Organize', '#e5322d'], extract: ['Organize', '#e5322d'],
+  remove: ['Organize', '#e5322d'], organize: ['Organize', '#e5322d'], rotate: ['Edit', '#8a3ab9'],
+  compress: ['Optimize', '#1f8a5b'], jpg2pdf: ['Convert', '#f2a20c'], pdf2jpg: ['Convert', '#f2a20c'],
+  watermark: ['Edit', '#8a3ab9'], numbers: ['Edit', '#8a3ab9'],
+};
+const CARDS = [{ id: 'cv', icon: '📄', name: 'CV Builder', desc: 'Create a professional CV with 50 templates and your photo. Download as PDF.', badge: 'New' }, ...TOOLS];
+
+function card(t) {
+  const [cat, color] = META[t.id] || ['Edit', '#ff6a00'];
   const b = document.createElement('button');
   b.className = 'card';
-  b.innerHTML = `<div class="ic">${t.icon}</div><h3>${t.name}</h3><p>${t.desc}</p>`;
+  b.dataset.cat = cat;
+  b.innerHTML = `<div class="ic" style="--ic:${color}">${t.icon}</div>${t.badge ? `<span class="badge">${t.badge}</span>` : ''}<h3>${t.name}</h3><p>${t.desc}</p>`;
   b.onclick = () => (location.hash = t.id);
-  $('grid').append(b);
+  return b;
+}
+CARDS.forEach((t) => $('grid').append(card(t)));
+
+['All', 'Organize', 'Optimize', 'Convert', 'Edit', 'CV'].forEach((c, i) => {
+  const b = document.createElement('button');
+  b.className = 'pill' + (i ? '' : ' on');
+  b.textContent = c === 'CV' ? 'CV Builder' : c;
+  b.onclick = () => {
+    document.querySelectorAll('.pill').forEach((p) => p.classList.toggle('on', p === b));
+    document.querySelectorAll('#grid .card').forEach((el) => (el.hidden = c !== 'All' && el.dataset.cat !== c));
+  };
+  $('filters').append(b);
 });
 
 function route() {
@@ -286,6 +302,7 @@ function route() {
   files = [];
   $('tool-title').textContent = tool.name;
   $('tool-desc').textContent = tool.desc;
+  $('drop-btn').textContent = tool.accept === PDF ? (tool.multiple ? 'Select PDF files' : 'Select PDF file') : 'Select images';
   $('file-input').accept = tool.accept;
   $('file-input').multiple = !!tool.multiple;
   $('status').textContent = '';
@@ -320,6 +337,8 @@ function renderFiles() {
     list.append(li);
   });
   $('go').disabled = files.length < (tool.min || 1);
+  $('go').hidden = !files.length;
+  $('drop').classList.toggle('has-files', files.length > 0);
   $('go').textContent = tool.name;
 }
 

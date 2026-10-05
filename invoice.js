@@ -11,7 +11,7 @@
   const COLORS = ['#ff6a00', '#1f6fd1', '#1f8a5b', '#3a3f47', '#8a3ab9', '#c0392b'];
 
   const SAMPLE = () => ({
-    type: 'invoice', logo: '', color: '#ff6a00', currency: 'R',
+    type: 'invoice', layout: 'classic', logo: '', color: '#ff6a00', currency: 'R',
     number: 'INV-0001', date: addDays(0), due: addDays(30), ref: '',
     from: { name: 'Sizwe Mahlangu Building & Tiling (Pty) Ltd', address: '45 Rivonia Road\nSandton, Johannesburg, 2196', email: 'accounts@example.co.za', phone: '+27 11 555 0123', vatNo: '4123456789', regNo: '2019/123456/07' },
     to: { name: 'Lerato Dlamini', address: '8 Oxford Road\nParktown, Johannesburg, 2193', email: 'lerato@example.co.za', phone: '+27 72 555 0198', vatNo: '' },
@@ -29,6 +29,7 @@
   let d;
   try { d = JSON.parse(localStorage.getItem(KEY)) || null; } catch { d = null; }
   if (!d) d = SAMPLE();
+  d.layout = d.layout || 'classic';
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch { /* storage full or blocked */ } };
 
   const num = (v) => (Number.isFinite(+v) ? +v : 0);
@@ -42,44 +43,97 @@
     return { sub: sum, vat: 0, total: sum };
   }
 
-  // ---- preview ----
-  function renderInto(el) {
+  // ---- preview: shared blocks arranged by 10 layouts ----
+  const COLOR_NAMES = { '#ff6a00': 'Orange', '#1f6fd1': 'Blue', '#1f8a5b': 'Green', '#3a3f47': 'Charcoal', '#8a3ab9': 'Plum', '#c0392b': 'Red' };
+
+  function blocks() {
     const q = d.type === 'quote';
     const t = totals();
     const party = (p) => `<b>${esc(p.name)}</b>${p.address ? `<br>${br(p.address)}` : ''}${p.email ? `<br>${esc(p.email)}` : ''}${p.phone ? `<br>${esc(p.phone)}` : ''}${p.vatNo ? `<br>VAT No: ${esc(p.vatNo)}` : ''}${p.regNo ? `<br>Reg No: ${esc(p.regNo)}` : ''}`;
     const vatLabel = d.vatMode === 'inclusive' ? `VAT (${num(d.vatRate)}%, included)` : `VAT (${num(d.vatRate)}%)`;
     const b = d.bank;
     const bankRows = [['Bank', b.bank], ['Account holder', b.holder], ['Account number', b.account], ['Branch code', b.branch], ['Account type', b.type], ['Reference', b.ref]].filter((r) => r[1]);
-    el.className = `inv-page${el.id === 'inv-page' ? ' print-page' : ''}`;
-    el.style.setProperty('--ia', d.color);
-    el.innerHTML = `
-      <header class="inv-top">
-        <div class="inv-brand">${d.logo ? `<img class="inv-logo" src="${d.logo}" alt="">` : ''}<div class="inv-from">${party(d.from)}</div></div>
-        <div class="inv-title"><h1>${q ? 'QUOTATION' : (d.vatMode === 'none' ? 'INVOICE' : 'TAX INVOICE')}</h1>
-          <table class="inv-meta">
-            <tr><td>${q ? 'Quote' : 'Invoice'} no.</td><td>${esc(d.number)}</td></tr>
-            <tr><td>Date</td><td>${esc(d.date)}</td></tr>
-            <tr><td>${q ? 'Valid until' : 'Due date'}</td><td>${esc(d.due)}</td></tr>
-            ${d.ref ? `<tr><td>Reference</td><td>${esc(d.ref)}</td></tr>` : ''}
-          </table></div>
-      </header>
-      <div class="inv-to"><div class="inv-label">${q ? 'Quote for' : 'Bill to'}</div>${party(d.to)}</div>
-      <table class="inv-items">
+    const dueLabel = q ? 'Valid until' : 'Due date';
+    return {
+      q, t, dueLabel,
+      title: q ? 'QUOTATION' : (d.vatMode === 'none' ? 'INVOICE' : 'TAX INVOICE'),
+      logo: d.logo ? `<img class="inv-logo" src="${d.logo}" alt="">` : '',
+      from: `<div class="inv-from">${party(d.from)}</div>`,
+      to: `<div class="inv-to"><div class="inv-label">${q ? 'Quote for' : 'Bill to'}</div>${party(d.to)}</div>`,
+      meta: `<table class="inv-meta">
+        <tr><td>${q ? 'Quote' : 'Invoice'} no.</td><td>${esc(d.number)}</td></tr>
+        <tr><td>Date</td><td>${esc(d.date)}</td></tr>
+        <tr><td>${dueLabel}</td><td>${esc(d.due)}</td></tr>
+        ${d.ref ? `<tr><td>Reference</td><td>${esc(d.ref)}</td></tr>` : ''}</table>`,
+      items: `<table class="inv-items">
         <thead><tr><th>#</th><th>Description</th><th class="r">Qty / Size</th><th class="r">Rate</th><th class="r">Amount</th></tr></thead>
         <tbody>${d.items.map((i, k) => `<tr><td>${k + 1}</td><td>${esc(i.desc)}</td>
           <td class="r">${num(i.qty)}${i.unit === 'qty' || i.unit === 'each' ? '' : ' ' + UNITS[i.unit]}</td>
           <td class="r">${money(i.rate)}${i.unit === 'm2' ? ' /m²' : i.unit === 'm' ? ' /m' : i.unit === 'hrs' ? ' /hr' : ''}</td>
-          <td class="r">${money(num(i.qty) * num(i.rate))}</td></tr>`).join('')}</tbody>
-      </table>
-      <div class="inv-bottom">
-        <div class="inv-notes">${d.notes ? `<p>${br(d.notes)}</p>` : ''}${d.terms ? `<div class="inv-label">Terms</div><p>${br(d.terms)}</p>` : ''}</div>
-        <table class="inv-totals">
-          ${d.vatMode === 'none' ? '' : `<tr><td>Subtotal (excl. VAT)</td><td>${money(t.sub)}</td></tr><tr><td>${vatLabel}</td><td>${money(t.vat)}</td></tr>`}
-          <tr class="inv-grand"><td>Total${d.vatMode === 'none' ? '' : ' (incl. VAT)'}</td><td>${money(t.total)}</td></tr>
-        </table>
-      </div>
-      ${bankRows.length ? `<div class="inv-bank"><div class="inv-label">Banking details</div><table>${bankRows.map((r) => `<tr><td>${r[0]}</td><td>${esc(r[1])}</td></tr>`).join('')}</table></div>` : ''}
-      ${q ? '<p class="inv-foot">This quotation is valid until the date shown above. Prices are subject to change thereafter.</p>' : ''}`;
+          <td class="r">${money(num(i.qty) * num(i.rate))}</td></tr>`).join('')}</tbody></table>`,
+      totals: `<table class="inv-totals">
+        ${d.vatMode === 'none' ? '' : `<tr><td>Subtotal (excl. VAT)</td><td>${money(t.sub)}</td></tr><tr><td>${vatLabel}</td><td>${money(t.vat)}</td></tr>`}
+        <tr class="inv-grand"><td>Total${d.vatMode === 'none' ? '' : ' (incl. VAT)'}</td><td>${money(t.total)}</td></tr></table>`,
+      notes: `<div class="inv-notes">${d.notes ? `<p>${br(d.notes)}</p>` : ''}${d.terms ? `<div class="inv-label">Terms</div><p>${br(d.terms)}</p>` : ''}</div>`,
+      bank: bankRows.length ? `<div class="inv-bank"><div class="inv-label">Banking details</div><table>${bankRows.map((r) => `<tr><td>${r[0]}</td><td>${esc(r[1])}</td></tr>`).join('')}</table></div>` : '',
+      foot: q ? '<p class="inv-foot">This quotation is valid until the date shown above. Prices are subject to change thereafter.</p>' : '',
+    };
+  }
+
+  // Arrangements shared by several layouts; CSS under .inv-<layout> does the rest.
+  const classic = (B) => `<header class="inv-top"><div class="inv-brand">${B.logo}${B.from}</div><div class="inv-title"><h1>${B.title}</h1>${B.meta}</div></header>
+    ${B.to}${B.items}<div class="inv-bottom">${B.notes}${B.totals}</div>${B.bank}${B.foot}`;
+  const boxed = (B) => `<header class="inv-head">${B.logo}<h1>${B.title}</h1></header>
+    <div class="inv-boxes"><div class="inv-box"><div class="inv-label">From</div>${B.from}</div>${B.to}<div class="inv-box">${B.meta}</div></div>
+    ${B.items}<div class="inv-bottom">${B.notes}${B.totals}</div>${B.bank}${B.foot}`;
+  const LAYOUTS = [
+    { id: 'classic', name: 'Classic', r: classic },
+    { id: 'band', name: 'Modern Band', r: (B) => `<header class="inv-bandh"><div class="inv-chip">${B.logo || '<span></span>'}</div><div class="inv-title"><h1>${B.title}</h1>${B.meta}</div></header>
+      <div class="inv-body"><div class="inv-parties"><div><div class="inv-label">From</div>${B.from}</div>${B.to}</div>${B.items}<div class="inv-bottom">${B.notes}${B.totals}</div>${B.bank}${B.foot}</div>` },
+    { id: 'minimal', name: 'Minimal', r: classic },
+    { id: 'sidebar', name: 'Sidebar', r: (B) => `<div class="inv-cols"><aside class="inv-side">${B.logo}${B.from}${B.bank}</aside>
+      <div class="inv-main"><h1>${B.title}</h1>${B.meta}${B.to}${B.items}${B.totals}${B.notes}${B.foot}</div></div>` },
+    { id: 'corporate', name: 'Corporate', r: boxed },
+    { id: 'elegant', name: 'Elegant', r: (B) => `<header class="inv-center">${B.logo}<h1>${B.title}</h1>${B.from}</header>
+      <div class="inv-parties">${B.to}<div>${B.meta}</div></div>${B.items}<div class="inv-bottom">${B.notes}${B.totals}</div>${B.bank}${B.foot}` },
+    { id: 'bold', name: 'Bold', r: (B) => `<header class="inv-boldh"><div class="inv-block"><h1>${B.title}</h1><div>No. ${esc(d.number)} · ${esc(d.date)}</div></div>
+      <div class="inv-due"><div class="inv-label">${B.q ? 'Quoted total' : 'Amount due'}</div><b>${money(B.t.total)}</b><div>${B.dueLabel}: ${esc(d.due)}</div></div></header>
+      <div class="inv-parties"><div>${B.logo}${B.from}</div>${B.to}</div>${B.items}<div class="inv-bottom">${B.notes}${B.totals}</div>${B.bank}${B.foot}` },
+    { id: 'split', name: 'Split', r: (B) => `<header class="inv-splith"><div class="inv-splitl">${B.logo}<h1>${B.title}</h1>${B.from}</div><div class="inv-splitr">${B.meta}${B.to}</div></header>
+      <div class="inv-body">${B.items}<div class="inv-bottom">${B.notes}${B.totals}</div>${B.bank}${B.foot}</div>` },
+    { id: 'stripe', name: 'Stripe', r: classic },
+    { id: 'compact', name: 'Compact', r: boxed },
+  ];
+  const TEMPLATES = LAYOUTS.flatMap((l) => COLORS.map((c) => ({ id: `${l.id}|${c}`, name: `${l.name} · ${COLOR_NAMES[c]}`, l, c })));
+
+  // Light tint of the accent, computed here because html2canvas can't parse color-mix().
+  const tint = (hex, a) => {
+    const n = parseInt(hex.slice(1), 16);
+    const mix = (v) => Math.round(v * a + 255 * (1 - a));
+    return `rgb(${mix(n >> 16)},${mix((n >> 8) & 255)},${mix(n & 255)})`;
+  };
+
+  function renderInto(el, layout = d.layout, color = d.color) {
+    const l = LAYOUTS.find((x) => x.id === layout) || LAYOUTS[0];
+    el.className = `inv-page inv-${l.id}${el.id === 'inv-page' ? ' print-page' : ''}`;
+    el.style.setProperty('--ia', color);
+    el.style.setProperty('--ia-soft', tint(color, 0.08));
+    el.innerHTML = l.r(blocks());
+    return l;
+  }
+
+  function buildPicker() {
+    const grid = $('inv-tpl-grid');
+    grid.innerHTML = '';
+    TEMPLATES.forEach((t) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'tpl'; b.dataset.l = t.l.id; b.dataset.c = t.c; b.title = t.name;
+      b.innerHTML = '<div class="tpl-mini"><div></div></div><span></span>';
+      b.querySelector('span').textContent = t.name;
+      renderInto(b.querySelector('.tpl-mini > div'), t.l.id, t.c);
+      b.onclick = () => { d.layout = t.l.id; d.color = t.c; update(); };
+      grid.append(b);
+    });
   }
 
   // ---- form ----
@@ -166,9 +220,14 @@
     $('inv-scale').style.height = `${$('inv-page').offsetHeight * s}px`;
   }
 
+  let thumbTimer;
   function update() {
     const q = d.type === 'quote';
-    renderInto($('inv-page'));
+    const l = renderInto($('inv-page'));
+    $('inv-tpl-name').textContent = `— ${l.name} · ${COLOR_NAMES[d.color] || ''}`;
+    document.querySelectorAll('#inv-tpl-grid .tpl').forEach((b) => b.classList.toggle('on', b.dataset.l === d.layout && b.dataset.c === d.color));
+    clearTimeout(thumbTimer);
+    thumbTimer = setTimeout(() => document.querySelectorAll('#inv-tpl-grid .tpl').forEach((b) => renderInto(b.querySelector('.tpl-mini > div'), b.dataset.l, b.dataset.c)), 400);
     document.querySelectorAll('#inv-type button').forEach((b) => b.classList.toggle('on', b.dataset.type === d.type));
     document.querySelectorAll('#inv-colors button').forEach((b) => b.classList.toggle('on', b.dataset.c === d.color));
     $('inv-due-label').textContent = q ? 'Valid until' : 'Due date';
@@ -203,9 +262,9 @@
     show() {
       if (!ready) {
         ready = true;
-        buildForm();
+        buildForm(); buildPicker();
         document.querySelectorAll('#inv-type button').forEach((b) => (b.onclick = () => setType(b.dataset.type)));
-        $('inv-pdf').onclick = () => window.exportA4(renderInto, `${(d.number || d.type).replace(/[^\w-]+/g, '_')}.pdf`, (s) => ($('inv-status').textContent = s));
+        $('inv-pdf').onclick = () => window.exportA4((p) => renderInto(p), `${(d.number || d.type).replace(/[^\w-]+/g, '_')}.pdf`, (s) => ($('inv-status').textContent = s));
         $('inv-print').onclick = () => window.print();
         $('inv-reset').onclick = () => {
           if (!confirm('Clear this document and start over with the sample?')) return;

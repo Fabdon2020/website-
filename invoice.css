@@ -49,3 +49,98 @@
 .inv-bank td:last-child{font-weight:600}
 .inv-foot{margin-top:24px;color:#777;font-size:11.5px;font-style:italic}
 @media (max-width:860px){.inv-layout{grid-template-columns:1fr}}
+
+/* ---- shared helpers for layouts ---- */
+.inv-page .inv-parties{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:24px 0 20px;align-items:start}
+.inv-page .inv-parties .inv-to{margin:0}
+.inv-page .inv-body{padding:0 52px 48px}
+
+/* Modern Band */
+.inv-page.inv-band{padding:0;border-top:none}
+.inv-band .inv-bandh{display:flex;justify-content:space-between;align-items:center;gap:24px;background:var(--ia);color:#fff;padding:36px 52px}
+.inv-band .inv-chip{background:#fff;border-radius:10px;padding:10px;min-width:60px;min-height:60px;display:grid;place-items:center}
+.inv-band .inv-chip .inv-logo{max-height:70px;max-width:180px}
+.inv-band .inv-title h1{color:#fff}
+.inv-band .inv-meta td:first-child{color:rgba(255,255,255,.75)}
+.inv-band .inv-to{background:none;border-left:none;padding:0}
+
+/* Minimal */
+.inv-page.inv-minimal{border-top:none}
+.inv-minimal .inv-title h1{font-weight:300;color:#111;letter-spacing:.3em;font-size:28px}
+.inv-minimal .inv-to{background:none;border-left:none;padding:0;border-top:1px solid #ddd;padding-top:14px;border-radius:0}
+.inv-minimal .inv-items th{background:none;color:#111;border-bottom:2px solid #111}
+.inv-minimal .inv-items tbody tr:nth-child(even) td{background:none}
+.inv-minimal .inv-grand td{background:none;color:#111;border-top:2px solid #111}
+.inv-minimal .inv-label{color:#111}
+.inv-minimal .inv-bank{border:none;border-top:1px solid #ddd;border-radius:0;padding:14px 0}
+
+/* Sidebar */
+.inv-page.inv-sidebar{padding:0;border-top:none}
+.inv-sidebar .inv-cols{display:grid;grid-template-columns:250px 1fr;min-height:1123px}
+.inv-sidebar .inv-side{background:var(--ia);color:#fff;padding:40px 24px;display:flex;flex-direction:column;gap:24px}
+.inv-sidebar .inv-side .inv-logo{background:#fff;border-radius:8px;padding:8px;max-width:100%}
+.inv-sidebar .inv-side b,.inv-sidebar .inv-side .inv-label{color:#fff}
+.inv-sidebar .inv-bank{border:1px solid rgba(255,255,255,.35);min-width:0;margin:0}
+.inv-sidebar .inv-bank td{display:block;padding:0}
+.inv-sidebar .inv-bank td:first-child{color:rgba(255,255,255,.75);margin-top:6px;font-size:11px}
+.inv-sidebar .inv-main{padding:44px 36px}
+.inv-sidebar .inv-main h1{margin:0 0 10px;font-size:30px;color:var(--ia);letter-spacing:.08em}
+.inv-sidebar .inv-meta{margin:0}
+.inv-sidebar .inv-meta td{padding:2px 16px 2px 0}
+.inv-sidebar .inv-totals{margin:16px 0 20px auto}
+
+/* Corporate + Compact (boxed) */
+.inv-page.inv-corporate,.inv-page.inv-compact{border-top:none}
+.inv-page .inv-head{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--ia);padding-bottom:16px}
+.inv-page .inv-head h1{margin:0;font-size:28px;letter-spacing:.08em;color:#333}
+.inv-page .inv-boxes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:20px 0}
+.inv-page .inv-boxes>div{border:1px solid #ddd;border-radius:4px;padding:12px;margin:0;background:#fff}
+.inv-page .inv-boxes .inv-to{border-left:1px solid #ddd}
+.inv-page .inv-boxes .inv-meta td{padding:2px 0 2px 0}
+.inv-page .inv-boxes .inv-meta td:last-child{padding-left:10px}
+.inv-corporate .inv-items th{background:#eceef2;color:#333;border-bottom:2px solid var(--ia)}
+.inv-corporate .inv-items td{border:1px solid #eee}
+.inv-compact{font-size:11px!important;padding:32px 36px!important}
+.inv-compact .inv-items td,.inv-compact .inv-items th{padding:5px 8px}
+.inv-compact .inv-head h1{font-size:22px}
+.inv-compact .inv-head{border-bottom-width:2px}
+
+/* Elegant */
+.inv-page.inv-elegant{font-family:Georgia,"Times New Roman",serif;border-top:none}
+.inv-elegant .inv-center{text-align:center;border-bottom:4px double var(--ia);padding-bottom:18px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.inv-elegant .inv-center h1{margin:0;font-size:32px;letter-spacing:.25em;color:#222;font-weight:400}
+.inv-elegant .inv-to{background:none;border-left:none;padding:0}
+.inv-elegant .inv-meta{margin-left:auto}
+.inv-elegant .inv-items th{background:none;color:var(--ia);border-bottom:1px solid var(--ia);font-weight:400;letter-spacing:.12em}
+.inv-elegant .inv-items tbody tr:nth-child(even) td{background:none}
+.inv-elegant .inv-grand td{background:none;color:var(--ia);border-top:4px double var(--ia)}
+
+/* Bold */
+.inv-page.inv-bold{border-top:none}
+.inv-bold .inv-boldh{display:grid;grid-template-columns:1fr 260px;gap:16px}
+.inv-bold .inv-block{background:var(--ia);color:#fff;border-radius:12px;padding:26px}
+.inv-bold .inv-block h1{margin:0 0 6px;font-size:38px;letter-spacing:.04em;line-height:1}
+.inv-bold .inv-due{background:#111;color:#fff;border-radius:12px;padding:22px;display:flex;flex-direction:column;justify-content:center}
+.inv-bold .inv-due .inv-label{color:#bbb}
+.inv-bold .inv-due b{font-size:26px;margin:4px 0}
+.inv-bold .inv-parties .inv-logo{margin-bottom:10px}
+.inv-bold .inv-items th{background:#111}
+
+/* Split */
+.inv-page.inv-split{padding:0;border-top:none}
+.inv-split .inv-splith{display:grid;grid-template-columns:1fr 1fr;margin-bottom:24px}
+.inv-split .inv-splitl{background:var(--ia);color:#fff;padding:40px 36px 30px 52px;display:flex;flex-direction:column;gap:12px}
+.inv-split .inv-splitl .inv-logo{background:#fff;border-radius:8px;padding:8px}
+.inv-split .inv-splitl h1{margin:0;font-size:30px;letter-spacing:.08em}
+.inv-split .inv-splitl b{color:#fff}
+.inv-split .inv-splitr{background:#f4f4f7;padding:40px 52px 30px 36px;display:flex;flex-direction:column;gap:20px}
+.inv-split .inv-splitr .inv-meta{margin:0}
+.inv-split .inv-splitr .inv-meta td{padding:2px 16px 2px 0}
+.inv-split .inv-to{margin:0;background:none;padding:0;border-left:none}
+
+/* Stripe */
+.inv-page.inv-stripe{border-top:none;border-left:22px solid var(--ia);padding-left:44px}
+.inv-stripe .inv-items th{background:none;color:var(--ia);border-bottom:2px solid var(--ia)}
+.inv-stripe .inv-items tbody tr:nth-child(odd) td{background:var(--ia-soft)}
+.inv-stripe .inv-items tbody tr:nth-child(even) td{background:#fff}
+.inv-stripe .inv-to{border-left-width:0;background:var(--ia-soft)}

@@ -8,9 +8,9 @@
 <title>Axious PDF &amp; CV Studio – Free PDF Tools &amp; CV Builder</title>
 <meta name="description" content="Free PDF tools (merge, split, compress, convert, organize) and a CV builder with 50 templates. Everything runs in your browser — no uploads, no sign-up.">
 <link rel="icon" href="logo.png">
-<link rel="stylesheet" href="style.css?v=7">
-<link rel="stylesheet" href="cv.css?v=7">
-<link rel="stylesheet" href="invoice.css?v=7">
+<link rel="stylesheet" href="style.css?v=8">
+<link rel="stylesheet" href="cv.css?v=8">
+<link rel="stylesheet" href="invoice.css?v=8">
 </head>
 <body>
 <header class="top">
@@ -83,6 +83,10 @@
         <button class="btn" id="inv-pdf">Download PDF</button>
       </div>
     </div>
+    <details class="tpl-wrap" open>
+      <summary>Templates <span id="inv-tpl-name"></span></summary>
+      <div class="tpl-grid" id="inv-tpl-grid"></div>
+    </details>
     <div class="cv-layout inv-layout">
       <form class="cv-form" id="inv-form" onsubmit="return false"></form>
       <div class="cv-preview-wrap"><div class="cv-scale" id="inv-scale"><div class="inv-page print-page" id="inv-page"></div></div></div>
@@ -101,8 +105,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="app.js?v=7"></script>
-<script src="cv.js?v=7"></script>
-<script src="invoice.js?v=7"></script>
+<script src="app.js?v=8"></script>
+<script src="cv.js?v=8"></script>
+<script src="invoice.js?v=8"></script>
 </body>
 </html>

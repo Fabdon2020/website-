@@ -1,10 +1,12 @@
-# FreePDF
+# Axious PDF & CV Studio
 
-A completely free, ilovepdf-style PDF toolkit that runs entirely in the browser — no server, no uploads, no limits.
+A completely free PDF toolkit and CV builder that runs entirely in the browser — no server, no uploads, no limits.
 
-**Tools:** Merge, Organize pages (drag/rotate/delete), Split, Extract pages, Remove pages, Rotate, Compress, Image → PDF, PDF → Image, Watermark, Page numbers.
+**CV Builder:** 50 templates (10 layouts × 5 colour palettes), optional photo, live preview, PDF download/print, autosaved draft.
 
-Built with [pdf-lib](https://pdf-lib.js.org/), [PDF.js](https://mozilla.github.io/pdf.js/) and [JSZip](https://stuk.github.io/jszip/) (loaded from cdnjs).
+**PDF tools:** Merge, Organize pages (drag/rotate/delete), Split, Extract pages, Remove pages, Rotate, Compress, Image → PDF, PDF → Image, Watermark, Page numbers.
+
+Built with [pdf-lib](https://pdf-lib.js.org/), [PDF.js](https://mozilla.github.io/pdf.js/), [JSZip](https://stuk.github.io/jszip/), [html2canvas](https://html2canvas.hertzen.com/) and [jsPDF](https://github.com/parallax/jsPDF) (loaded from cdnjs).
 
 ## Run locally
 ```

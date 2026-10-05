@@ -3,21 +3,31 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FreePDF – Free Online PDF Tools</title>
-<meta name="description" content="100% free PDF tools: merge, split, compress, rotate, convert and more. Files never leave your browser.">
-<link rel="icon" href="favicon.svg">
+<title>Axious PDF &amp; CV Studio – Free PDF Tools &amp; CV Builder</title>
+<meta name="description" content="Free PDF tools (merge, split, compress, convert, organize) and a CV builder with 50 templates. Everything runs in your browser — no uploads, no sign-up.">
+<link rel="icon" href="logo.png">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="cv.css">
 </head>
 <body>
 <header class="top">
-  <a href="#" class="logo" id="home">Free<span>PDF</span></a>
-  <span class="tag">100% free · no sign-up · files never leave your device</span>
+  <a href="#" class="brand" id="home"><img src="logo.png" alt="" width="36" height="36"><span><b>Axious</b> PDF &amp; CV Studio</span></a>
+  <nav>
+    <a href="#">PDF Tools</a>
+    <a href="#cv" class="nav-cta">CV Builder</a>
+  </nav>
 </header>
 
 <main>
   <section id="grid-view">
-    <h1>Every PDF tool you need, completely free</h1>
-    <p class="sub">All processing happens in your browser. No uploads, no limits, no watermarks.</p>
+    <div class="hero">
+      <h1>Your free studio for <span class="grad">PDFs</span> and <span class="grad">CVs</span></h1>
+      <p class="sub">Edit PDFs and build a polished CV in minutes. 100% free, no sign-up, and your files never leave your device.</p>
+      <div class="hero-cta">
+        <a href="#tools" class="btn" id="to-tools">Edit PDFs</a>
+        <a href="#cv" class="btn btn-ghost">Build a CV</a>
+      </div>
+    </div>
     <div class="grid" id="grid"></div>
   </section>
 
@@ -32,16 +42,39 @@
     <ul class="files" id="file-list"></ul>
     <div class="pages" id="pages"></div>
     <div class="options" id="options"></div>
-    <button class="go" id="go" disabled>Process</button>
+    <button class="go btn" id="go" disabled>Process</button>
     <p class="status" id="status"></p>
+  </section>
+
+  <section id="cv-view" hidden>
+    <div class="cv-head">
+      <h2>CV Builder</h2>
+      <div class="cv-actions">
+        <button class="btn btn-ghost" id="cv-reset">Start over</button>
+        <button class="btn btn-ghost" id="cv-print">Print</button>
+        <button class="btn" id="cv-pdf">Download PDF</button>
+      </div>
+    </div>
+    <details class="tpl-wrap" open>
+      <summary>Templates <span id="tpl-name"></span></summary>
+      <div class="tpl-grid" id="tpl-grid"></div>
+    </details>
+    <div class="cv-layout">
+      <form class="cv-form" id="cv-form" onsubmit="return false"></form>
+      <div class="cv-preview-wrap"><div class="cv-scale" id="cv-scale"><div class="cv-page" id="cv-page"></div></div></div>
+    </div>
+    <p class="status" id="cv-status"></p>
   </section>
 </main>
 
-<footer>FreePDF — open source, free forever. Your files are processed locally and never uploaded.</footer>
+<footer>Axious PDF &amp; CV Studio — free forever. Your files are processed locally and never uploaded.</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="app.js"></script>
+<script src="cv.js"></script>
 </body>
 </html>

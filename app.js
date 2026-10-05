@@ -257,6 +257,13 @@ const TOOLS = [
 let tool = null;
 let files = [];
 
+{
+  const b = document.createElement('button');
+  b.className = 'card featured';
+  b.innerHTML = '<div class="ic">📄</div><h3>CV Builder</h3><p>50 templates, photo support, instant PDF download.</p>';
+  b.onclick = () => (location.hash = 'cv');
+  $('grid').append(b);
+}
 TOOLS.forEach((t) => {
   const b = document.createElement('button');
   b.className = 'card';
@@ -266,9 +273,15 @@ TOOLS.forEach((t) => {
 });
 
 function route() {
-  tool = TOOLS.find((t) => t.id === location.hash.slice(1)) || null;
-  $('grid-view').hidden = !!tool;
+  const hash = location.hash.slice(1);
+  tool = TOOLS.find((t) => t.id === hash) || null;
+  const cv = hash === 'cv';
+  $('grid-view').hidden = !!tool || cv;
   $('tool-view').hidden = !tool;
+  $('cv-view').hidden = !cv;
+  window.scrollTo(0, 0);
+  if (hash === 'tools') $('grid').scrollIntoView();
+  if (cv && window.CV) window.CV.show();
   if (!tool) return;
   files = [];
   $('tool-title').textContent = tool.name;

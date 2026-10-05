@@ -1,4 +1,4 @@
-# Axious PDF & CV Studio
+# Axious Office
 
 A completely free PDF toolkit and CV builder that runs entirely in the browser — no server, no uploads, no limits.
 

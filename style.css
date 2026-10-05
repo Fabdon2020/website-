@@ -1,5 +1,5 @@
 :root{--bg:#f5f5fa;--card:#fff;--text:#33333b;--title:#161616;--muted:#6b6b76;--accent:#ff6a00;--accent-dark:#e85f00;--tint:#fff1e6;--border:#e6e6ee;
---grad:linear-gradient(135deg,#ff8a1f,#ff5a00);--shadow:0 4px 18px rgba(30,30,60,.08);color-scheme:light}
+--grad:linear-gradient(135deg,#ff8a1f,#ff5a00);--shadow:0 4px 18px rgba(30,30,60,.08);color-scheme:only light}
 *{box-sizing:border-box}
 body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
 a{color:inherit}
@@ -56,7 +56,10 @@ h1{font-size:clamp(1.7rem,4vw,2.6rem);margin:0 0 14px;line-height:1.2;color:var(
 .page img{width:100%;height:130px;object-fit:contain;transition:transform .2s}
 .page div{display:flex;gap:4px;justify-content:center;align-items:center;font-size:.85rem}
 .page button{background:none;border:1px solid var(--border);border-radius:4px;color:var(--text);cursor:pointer}
-footer{text-align:center;color:var(--muted);font-size:.85rem;padding:32px 16px}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:32px 16px;background:#fff;border-top:1px solid var(--border);margin-top:40px}
+footer p{margin:4px 0}
+.powered a{color:var(--accent);font-weight:600;text-decoration:none}
+.powered a:hover{text-decoration:underline}
 @media (max-width:900px){nav a:not(.nav-cta){display:none}}
 @media (max-width:600px){.top{padding:8px 16px}.brand span{font-size:.95rem}.drop strong{padding:20px 36px;font-size:1.2rem}}
 .go[hidden]{display:none}

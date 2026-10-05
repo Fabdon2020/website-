@@ -1,7 +1,7 @@
 // CV Builder: 10 layouts x 5 palettes = 50 templates, rendered live in the browser.
 (() => {
   const $ = (id) => document.getElementById(id);
-  const KEY = 'axious-cv-v1';
+  const KEY = 'axious-cv-v2';
   const esc = (s) => String(s || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const lines = (s, sep = /\n/) => String(s || '').split(sep).map((x) => x.trim()).filter(Boolean);
 
@@ -15,16 +15,16 @@
 
   const SAMPLE = {
     template: 'sidebar-left-orange', photo: '', photoShape: 'round',
-    name: 'Alex Morgan', title: 'Product Designer',
-    email: 'alex@example.com', phone: '+1 555 0100', location: 'London, UK', website: 'linkedin.com/in/alexmorgan',
+    name: 'Thandiwe Nkosi', title: 'Product Designer',
+    email: 'thandiwe.nkosi@example.co.za', phone: '+27 82 555 0147', location: '12 Jan Smuts Avenue, Rosebank, Johannesburg, 2196', website: 'linkedin.com/in/thandiwenkosi',
     summary: 'Creative product designer with 6+ years of experience crafting user-friendly web and mobile apps. Passionate about clean interfaces, accessibility and data-informed design.',
     experience: [
-      { role: 'Senior Product Designer', org: 'Brightlabs', start: '2021', end: 'Present', desc: 'Led redesign of the core app, lifting retention by 18%.\nBuilt and maintained the company design system.' },
-      { role: 'UI/UX Designer', org: 'Pixel & Co', start: '2018', end: '2021', desc: 'Designed 20+ client websites and mobile apps.\nRan user research and usability testing.' },
+      { role: 'Senior Product Designer', org: 'Ubuntu Digital, Johannesburg', start: '2021', end: 'Present', desc: 'Led redesign of the core app, lifting retention by 18%.\nBuilt and maintained the company design system.' },
+      { role: 'UI/UX Designer', org: 'Kasi Creative Agency, Cape Town', start: '2018', end: '2021', desc: 'Designed 20+ client websites and mobile apps.\nRan user research and usability testing.' },
     ],
-    education: [{ role: 'BA Graphic Design', org: 'University of the Arts', start: '2014', end: '2018', desc: '' }],
+    education: [{ role: 'BA Graphic Design', org: 'University of Johannesburg', start: '2014', end: '2018', desc: '' }],
     skills: 'Figma, Prototyping, User research, Design systems, HTML & CSS, Accessibility',
-    languages: 'English (native)\nSpanish (fluent)',
+    languages: 'English (fluent)\nisiZulu (native)\nAfrikaans (conversational)',
     certs: 'Google UX Design Certificate',
     refs: 'Available on request',
   };
